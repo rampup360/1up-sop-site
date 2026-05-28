@@ -1,0 +1,8 @@
+---
+// Standalone Command Center dashboard. The source lives in src/command-center.html
+// as a self-contained HTML/CSS document (no build step, easy to fork). We emit it
+// verbatim via set:html so it renders exactly as authored at the clean /command-center
+// URL in both dev and production — Astro adds no wrapper and does not scope its styles.
+import html from '../command-center.html?raw';
+---
+<Fragment set:html={html} />
