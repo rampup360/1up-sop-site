@@ -5,7 +5,7 @@ import starlight from '@astrojs/starlight';
 export default defineConfig({
 	integrations: [
 		starlight({
-			title: '7FA SOP Example',
+			title: '1UP Media Solutions SOPs',
 			description: 'A starter wiki for a seven-figure agency — paid, organic, sales, ops, measurement, creative.',
 			customCss: ['./src/styles/custom.css'],
 			components: {
