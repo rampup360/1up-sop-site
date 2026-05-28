@@ -1,0 +1,7 @@
+---
+// Standalone Connections dashboard. Source is src/connections.html
+// (self-contained HTML/CSS, no build step). Emitted verbatim via set:html so it
+// renders exactly as authored at the clean /connections URL in dev and prod.
+import html from '../connections.html?raw';
+---
+<Fragment set:html={html} />

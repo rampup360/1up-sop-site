@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[YOUR AGENCY] — Content Strategy</title>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  CONTENT STRATEGY DASHBOARD                                   ║
+  ║  Companion to the Command Center. One screen for pillars,    ║
+  ║  the production pipeline, the publishing calendar, and stats.║
+  ║                                                              ║
+  ║  HOW TO CUSTOMIZE:                                           ║
+  ║  1. Find every [PLACEHOLDER] and replace with your info      ║
+  ║  2. Delete sections that don't apply to your business        ║
+  ║  3. SOP buttons link into this wiki — adjust slugs as needed ║
+  ║                                                              ║
+  ║  DESIGN: Dark theme, card-based, mobile responsive           ║
+  ║  STACK: Pure HTML/CSS — no dependencies, no build step       ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #e2e8f0; }
+.header { padding: 20px 24px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.header h1 { font-size: 1.6rem; color: #f8fafc; }
+.header p { color: #64748b; font-size: 0.85rem; margin-top: 4px; }
+.header-wiki { display: flex; align-items: center; gap: 10px; }
+.wiki-link { display: inline-block; padding: 8px 16px; background: #2563eb; border: 1px solid #3b82f6; border-radius: 8px; color: #fff; text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: all 0.15s; }
+.wiki-link:hover { background: #1d4ed8; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; padding: 20px 24px; }
+.card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; overflow: hidden; }
+.card-header { padding: 14px 18px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+.card-title { font-weight: 700; font-size: 1rem; }
+.badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 8px; font-weight: 600; }
+.badge-green { background: #166534; color: #4ade80; }
+.badge-yellow { background: #713f12; color: #facc15; }
+.badge-red { background: #7f1d1d; color: #fca5a5; }
+.badge-blue { background: #1e3a5f; color: #93c5fd; }
+.badge-purple { background: #4c1d95; color: #c4b5fd; }
+.badge-orange { background: #7c2d12; color: #fdba74; }
+.card-body { padding: 14px 18px; }
+.card-body ul { list-style: none; }
+.card-body li { padding: 6px 0; border-bottom: 1px solid #1a2332; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.card-body li:last-child { border-bottom: none; }
+.label { color: #94a3b8; display: flex; align-items: center; gap: 4px; flex: 1; }
+.value { color: #e2e8f0; font-weight: 500; text-align: right; white-space: nowrap; }
+.links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 14px 18px; }
+.link-btn { display: block; padding: 10px 14px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; text-decoration: none; font-size: 0.85rem; text-align: center; transition: all 0.15s; }
+.link-btn:hover { background: #253347; border-color: #475569; }
+.link-btn.primary { background: #2563eb; border-color: #3b82f6; }
+.full-width { grid-column: 1 / -1; }
+.two-thirds { grid-column: span 2; }
+.dept { margin-bottom: 14px; }
+.dept:last-child { margin-bottom: 0; }
+.dept-title { font-size: 0.78rem; color: #38bdf8; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.dept-items { font-size: 0.84rem; color: #94a3b8; line-height: 1.8; }
+.dept-items a { color: #93c5fd; text-decoration: none; }
+.dept-items a:hover { color: #bfdbfe; text-decoration: underline; }
+.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-green { background: #4ade80; }
+.dot-yellow { background: #facc15; }
+.dot-red { background: #f87171; }
+.dot-blue { background: #38bdf8; }
+.dot-orange { background: #fb923c; }
+.dot-purple { background: #c084fc; }
+.sop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; padding: 14px 18px; }
+.sop-cat { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; }
+.sop-cat-title { font-size: 0.75rem; color: #38bdf8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.sop-cat ul { list-style: none; }
+.sop-cat li { font-size: 0.78rem; padding: 2px 0; }
+.sop-cat a { color: #93c5fd; text-decoration: none; }
+.sop-cat a:hover { color: #bfdbfe; }
+.timeline-row { display: flex; gap: 12px; padding: 7px 0; border-bottom: 1px solid #1a2332; align-items: flex-start; font-size: 0.84rem; }
+.timeline-row:last-child { border-bottom: none; }
+.timeline-when { color: #38bdf8; font-weight: 600; white-space: nowrap; min-width: 130px; }
+.timeline-what { color: #94a3b8; flex: 1; }
+.timeline-status { white-space: nowrap; font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+.status-now { background: #7f1d1d; color: #fca5a5; }
+.status-soon { background: #713f12; color: #facc15; }
+.status-later { background: #1e3a5f; color: #93c5fd; }
+.status-goal { background: #14532d; color: #86efac; }
+.divider { padding: 6px 24px; }
+.divider-label { font-size: 0.75rem; color: #475569; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; border-top: 1px solid #1e293b; padding-top: 6px; }
+.nav { background:#0a1628; border-bottom:1px solid #1e293b; padding:7px 16px; display:flex; gap:6px; flex-wrap:wrap; align-items:center; font-size:0.78rem; font-family:system-ui,sans-serif; position:sticky; top:0; z-index:999; }
+.nav a { color:#93c5fd; text-decoration:none; padding:3px 9px; border-radius:5px; background:#1e293b; white-space:nowrap; }
+.nav a.active { background:#2563eb; color:#fff; }
+.nav a.wiki { color:#4ade80; }
+@media (max-width: 768px) { .grid { grid-template-columns: 1fr; } .links { grid-template-columns: 1fr; } .two-thirds { grid-column: span 1; } .sop-grid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- STICKY NAV BAR (shared across the local dashboard pages) -->
+<div class="nav">
+  <span style="color:#475569;font-weight:700;margin-right:4px;">[AGENCY]-HQ</span>
+  <a href="/command-center">🏠 Command Center</a>
+  <a href="/content-strategy" class="active">📊 Content Strategy</a>
+  <a href="/client-tracker">👥 Client Tracker</a>
+  <a href="/connections">🔌 Connections</a>
+  <a href="/" class="wiki">📖 SOP Wiki</a>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>[YOUR AGENCY] — Content Strategy</h1>
+    <p>Pillars, pipeline, calendar, and channel stats — [MONTH YEAR]</p>
+  </div>
+  <div class="header-wiki">
+    <a href="/" class="wiki-link">📖 SOP Wiki</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION: CONTENT PILLARS
+     The 3–5 themes every piece of content ladders up to.
+     ══════════════════════════════════════════════════════ -->
+<div class="divider"><div class="divider-label">Content Pillars</div></div>
+<div class="grid">
+
+  <div class="card full-width">
+    <div class="card-header">
+      <span class="card-title">Core Pillars — Everything Ladders to These</span>
+      <span class="badge badge-blue">[X] PILLARS</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><span class="label"><span class="status-dot dot-blue"></span>Pillar 1 — [EDUCATIONAL / HOW-TO]</span><span class="value">[X]% of output · Awareness</span></li>
+        <li><span class="label"><span class="status-dot dot-green"></span>Pillar 2 — [CASE STUDIES / RESULTS]</span><span class="value">[X]% of output · Proof</span></li>
+        <li><span class="label"><span class="status-dot dot-purple"></span>Pillar 3 — [BEHIND THE SCENES / CULTURE]</span><span class="value">[X]% of output · Trust</span></li>
+        <li><span class="label"><span class="status-dot dot-orange"></span>Pillar 4 — [OFFERS / CTAs]</span><span class="value">[X]% of output · Conversion</span></li>
+      </ul>
+    </div>
+    <div class="links">
+      <a href="/organic/seo-pillars/" class="link-btn">Content Pillar Strategy</a>
+      <a href="/creative-strategy/icp/" class="link-btn">Ideal Client Profile</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION: PRODUCTION PIPELINE
+     One row per stage. Move pieces left → right as they progress.
+     ══════════════════════════════════════════════════════ -->
+<div class="divider"><div class="divider-label">Production Pipeline</div></div>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Video / YouTube Pipeline</span>
+      <span class="badge badge-yellow">IN MOTION</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><span class="label"><span class="status-dot dot-blue"></span>Ideas / backlog</span><span class="value">[X] queued</span></li>
+        <li><span class="label"><span class="status-dot dot-purple"></span>Scripted</span><span class="value">[X] ready to film</span></li>
+        <li><span class="label"><span class="status-dot dot-orange"></span>Filmed — awaiting edit</span><span class="value" style="color:#f87171;">[X] backlog</span></li>
+        <li><span class="label"><span class="status-dot dot-yellow"></span>In edit</span><span class="value">[X] with editor</span></li>
+        <li><span class="label"><span class="status-dot dot-green"></span>Scheduled / published</span><span class="value">[X] this month</span></li>
+      </ul>
+    </div>
+    <div class="links">
+      <a href="/creative-strategy/video-production/" class="link-btn">Video Production Pipeline</a>
+      <a href="/ai-automation/ai-content-production/" class="link-btn">AI-Assisted Production</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Written / SEO Pipeline</span>
+      <span class="badge badge-blue">SEO FOCUS</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><span class="label"><span class="status-dot dot-blue"></span>Keyword targets chosen</span><span class="value">[X] in queue</span></li>
+        <li><span class="label"><span class="status-dot dot-purple"></span>Drafting</span><span class="value">[X] writer(s)</span></li>
+        <li><span class="label"><span class="status-dot dot-yellow"></span>In review / on-page</span><span class="value">[X] pending</span></li>
+        <li><span class="label"><span class="status-dot dot-green"></span>Published this month</span><span class="value">[X] / [X] goal</span></li>
+      </ul>
+    </div>
+    <div class="links">
+      <a href="/organic/blog-production/" class="link-btn">Blog Production SOP</a>
+      <a href="/organic/seo-onpage/" class="link-btn">On-page Checklist</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Social & Email Pipeline</span>
+      <span class="badge badge-purple">DISTRIBUTION</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><span class="label"><span class="status-dot dot-green"></span>LinkedIn cadence</span><span class="value">[X] posts/week</span></li>
+        <li><span class="label"><span class="status-dot dot-blue"></span>Repurposed clips queued</span><span class="value">[X] scheduled</span></li>
+        <li><span class="label"><span class="status-dot dot-yellow"></span>Newsletter — next send</span><span class="value">[DATE]</span></li>
+        <li><span class="label"><span class="status-dot dot-orange"></span>Reviews requested</span><span class="value">[X] this month</span></li>
+      </ul>
+    </div>
+    <div class="links">
+      <a href="/organic/linkedin-cadence/" class="link-btn">LinkedIn Cadence</a>
+      <a href="/organic/email-newsletter/" class="link-btn">Email Newsletter</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION: PUBLISHING CALENDAR
+     Keep the next two weeks ruthlessly current.
+     ══════════════════════════════════════════════════════ -->
+<div class="divider"><div class="divider-label">Publishing Calendar</div></div>
+<div class="grid">
+
+  <div class="card two-thirds">
+    <div class="card-header">
+      <span class="card-title">Next 2 Weeks</span>
+      <span class="badge badge-orange">PLANNED</span>
+    </div>
+    <div class="card-body">
+      <div class="timeline-row">
+        <span class="timeline-when">[DATE]</span>
+        <span class="timeline-what">[CONTENT PIECE] — YouTube long-form · Pillar 1</span>
+        <span class="timeline-status status-now">NOW</span>
+      </div>
+      <div class="timeline-row">
+        <span class="timeline-when">[DATE]</span>
+        <span class="timeline-what">[BLOG TITLE] — SEO article · Pillar 1</span>
+        <span class="timeline-status status-soon">SOON</span>
+      </div>
+      <div class="timeline-row">
+        <span class="timeline-when">[DATE]</span>
+        <span class="timeline-what">Newsletter — [THEME] · Pillar 2</span>
+        <span class="timeline-status status-soon">SOON</span>
+      </div>
+      <div class="timeline-row">
+        <span class="timeline-when">[DATE]</span>
+        <span class="timeline-what">Case study clip — [CLIENT] result · Pillar 2</span>
+        <span class="timeline-status status-later">LATER</span>
+      </div>
+      <div class="timeline-row">
+        <span class="timeline-when">[DATE]</span>
+        <span class="timeline-what">Offer post — [PACKAGE] · Pillar 4</span>
+        <span class="timeline-status status-later">LATER</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Weekly Cadence Target</span>
+      <span class="badge badge-green">RHYTHM</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><span class="label">YouTube long-form</span><span class="value">[X] / week</span></li>
+        <li><span class="label">Short-form clips</span><span class="value">[X] / week</span></li>
+        <li><span class="label">SEO articles</span><span class="value">[X] / week</span></li>
+        <li><span class="label">LinkedIn posts</span><span class="value">[X] / week</span></li>
+        <li><span class="label">Newsletter</span><span class="value">[X] / month</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION: CHANNEL STATS
+     ══════════════════════════════════════════════════════ -->
+<div class="divider"><div class="divider-label">Channel Stats</div></div>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">YouTube ([MONTH YEAR])</span>
+      <span class="badge badge-green">ACTIVE</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><span class="label">Subscribers</span><span class="value">[X]</span></li>
+        <li><span class="label">Total views</span><span class="value">[X]</span></li>
+        <li><span class="label">Videos published</span><span class="value">[X]</span></li>
+        <li><span class="label">Unedited backlog</span><span class="value" style="color:#f87171;">[X]</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Website / SEO</span>
+      <span class="badge badge-blue">ORGANIC</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><span class="label">Indexed pages</span><span class="value">[X]</span></li>
+        <li><span class="label">Keywords ranking</span><span class="value">[X]</span></li>
+        <li><span class="label">Organic sessions / mo</span><span class="value">[X]</span></li>
+        <li><span class="label">Top page</span><span class="value">[PAGE]</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Email / Social</span>
+      <span class="badge badge-purple">AUDIENCE</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><span class="label">Newsletter subscribers</span><span class="value">[X]</span></li>
+        <li><span class="label">Open rate</span><span class="value">[X]%</span></li>
+        <li><span class="label">LinkedIn followers</span><span class="value">[X]</span></li>
+        <li><span class="label">Avg post impressions</span><span class="value">[X]</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div style="padding:20px 24px;border-top:1px solid #1e293b;font-size:0.75rem;color:#334155;text-align:center;">
+  [YOUR AGENCY] · Content Strategy · Built with the 7-Figure Agency SOP Wiki template ·
+  <a href="/" style="color:#475569;text-decoration:none;">SOP Wiki</a> ·
+  Updated [DATE]
+</div>
+
+</body>
+</html>

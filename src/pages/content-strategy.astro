@@ -1,0 +1,7 @@
+---
+// Standalone Content Strategy dashboard. Source is src/content-strategy.html
+// (self-contained HTML/CSS, no build step). Emitted verbatim via set:html so it
+// renders exactly as authored at the clean /content-strategy URL in dev and prod.
+import html from '../content-strategy.html?raw';
+---
+<Fragment set:html={html} />

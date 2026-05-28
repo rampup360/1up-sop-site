@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[YOUR AGENCY] — Client Tracker</title>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  CLIENT TRACKER DASHBOARD                                     ║
+  ║  Companion to the Command Center. One screen for active      ║
+  ║  clients, the prospect pipeline, revenue, and renewals.      ║
+  ║                                                              ║
+  ║  HOW TO CUSTOMIZE:                                           ║
+  ║  1. One row per client — green=healthy, yellow=attention,    ║
+  ║     red=at-risk. Update weekly.                              ║
+  ║  2. SOP buttons link into this wiki — adjust slugs as needed ║
+  ║                                                              ║
+  ║  DESIGN: Dark theme, card-based, mobile responsive           ║
+  ║  STACK: Pure HTML/CSS — no dependencies, no build step       ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #e2e8f0; }
+.header { padding: 20px 24px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.header h1 { font-size: 1.6rem; color: #f8fafc; }
+.header p { color: #64748b; font-size: 0.85rem; margin-top: 4px; }
+.header-wiki { display: flex; align-items: center; gap: 10px; }
+.wiki-link { display: inline-block; padding: 8px 16px; background: #2563eb; border: 1px solid #3b82f6; border-radius: 8px; color: #fff; text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: all 0.15s; }
+.wiki-link:hover { background: #1d4ed8; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; padding: 20px 24px; }
+.card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; overflow: hidden; }
+.card-header { padding: 14px 18px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+.card-title { font-weight: 700; font-size: 1rem; }
+.badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 8px; font-weight: 600; }
+.badge-green { background: #166534; color: #4ade80; }
+.badge-yellow { background: #713f12; color: #facc15; }
+.badge-red { background: #7f1d1d; color: #fca5a5; }
+.badge-blue { background: #1e3a5f; color: #93c5fd; }
+.badge-purple { background: #4c1d95; color: #c4b5fd; }
+.badge-orange { background: #7c2d12; color: #fdba74; }
+.card-body { padding: 14px 18px; }
+.card-body ul { list-style: none; }
+.card-body li { padding: 6px 0; border-bottom: 1px solid #1a2332; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.card-body li:last-child { border-bottom: none; }
+.label { color: #94a3b8; display: flex; align-items: center; gap: 4px; flex: 1; }
+.value { color: #e2e8f0; font-weight: 500; text-align: right; white-space: nowrap; }
+.links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 14px 18px; }
+.link-btn { display: block; padding: 10px 14px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; text-decoration: none; font-size: 0.85rem; text-align: center; transition: all 0.15s; }
+.link-btn:hover { background: #253347; border-color: #475569; }
+.link-btn.primary { background: #2563eb; border-color: #3b82f6; }
+.full-width { grid-column: 1 / -1; }
+.two-thirds { grid-column: span 2; }
+.dept { margin-bottom: 14px; }
+.dept:last-child { margin-bottom: 0; }
+.dept-title { font-size: 0.78rem; color: #38bdf8; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.dept-items { font-size: 0.84rem; color: #94a3b8; line-height: 1.8; }
+.dept-items a { color: #93c5fd; text-decoration: none; }
+.dept-items a:hover { color: #bfdbfe; text-decoration: underline; }
+.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-green { background: #4ade80; }
+.dot-yellow { background: #facc15; }
+.dot-red { background: #f87171; }
+.dot-blue { background: #38bdf8; }
+.dot-orange { background: #fb923c; }
+.dot-purple { background: #c084fc; }
+.sop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; padding: 14px 18px; }
+.sop-cat { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; }
+.sop-cat-title { font-size: 0.75rem; color: #38bdf8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.sop-cat ul { list-style: none; }
+.sop-cat li { font-size: 0.78rem; padding: 2px 0; }
+.sop-cat a { color: #93c5fd; text-decoration: none; }
+.sop-cat a:hover { color: #bfdbfe; }
+.timeline-row { display: flex; gap: 12px; padding: 7px 0; border-bottom: 1px solid #1a2332; align-items: flex-start; font-size: 0.84rem; }
+.timeline-row:last-child { border-bottom: none; }
+.timeline-when { color: #38bdf8; font-weight: 600; white-space: nowrap; min-width: 130px; }
+.timeline-what { color: #94a3b8; flex: 1; }
+.timeline-status { white-space: nowrap; font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+.status-now { background: #7f1d1d; color: #fca5a5; }
+.status-soon { background: #713f12; color: #facc15; }
+.status-later { background: #1e3a5f; color: #93c5fd; }
+.status-goal { background: #14532d; color: #86efac; }
+.divider { padding: 6px 24px; }
+.divider-label { font-size: 0.75rem; color: #475569; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; border-top: 1px solid #1e293b; padding-top: 6px; }
+.nav { background:#0a1628; border-bottom:1px solid #1e293b; padding:7px 16px; display:flex; gap:6px; flex-wrap:wrap; align-items:center; font-size:0.78rem; font-family:system-ui,sans-serif; position:sticky; top:0; z-index:999; }
+.nav a { color:#93c5fd; text-decoration:none; padding:3px 9px; border-radius:5px; background:#1e293b; white-space:nowrap; }
+.nav a.active { background:#2563eb; color:#fff; }
+.nav a.wiki { color:#4ade80; }
+@media (max-width: 768px) { .grid { grid-template-columns: 1fr; } .links { grid-template-columns: 1fr; } .two-thirds { grid-column: span 1; } .sop-grid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- STICKY NAV BAR (shared across the local dashboard pages) -->
+<div class="nav">
+  <span style="color:#475569;font-weight:700;margin-right:4px;">[AGENCY]-HQ</span>
+  <a href="/command-center">🏠 Command Center</a>
+  <a href="/content-strategy">📊 Content Strategy</a>
+  <a href="/client-tracker" class="active">👥 Client Tracker</a>
+  <a href="/connections">🔌 Connections</a>
+  <a href="/" class="wiki">📖 SOP Wiki</a>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>[YOUR AGENCY] — Client Tracker</h1>
+    <p>Active accounts, pipeline, revenue, and renewals — [MONTH YEAR]</p>
+  </div>
+  <div class="header-wiki">
+    <a href="/" class="wiki-link">📖 SOP Wiki</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION: ACTIVE CLIENTS
+     One row per client. green=healthy, yellow=attention, red=at-risk.
+     ══════════════════════════════════════════════════════ -->
+<div class="divider"><div class="divider-label">Active Clients</div></div>
+<div class="grid">
+
+  <div class="card full-width">
+    <div class="card-header">
+      <span class="card-title">Account Health — All Clients</span>
+      <span class="badge badge-green">[X] CLIENTS · $[X]K MRR</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li style="font-size:0.78rem;color:#64748b;border-bottom:1px solid #1a2332;padding-bottom:8px;margin-bottom:4px;">
+          <span style="color:#4ade80;font-weight:700;">● Healthy</span>&nbsp;&nbsp;
+          <span style="color:#facc15;font-weight:700;">● Needs attention</span>&nbsp;&nbsp;
+          <span style="color:#f87171;font-weight:700;">● At risk</span>&nbsp;&nbsp;
+          <span style="color:#38bdf8;font-weight:700;">● Onboarding</span>
+        </li>
+        <li><span class="label"><span class="status-dot dot-green"></span>[CLIENT NAME 1]</span><span class="value">Growth · Month [X] · 📈 Leads up</span></li>
+        <li><span class="label"><span class="status-dot dot-green"></span>[CLIENT NAME 2]</span><span class="value">Starter · Month [X] · 📈 Ranking</span></li>
+        <li><span class="label"><span class="status-dot dot-yellow"></span>[CLIENT NAME 3]</span><span class="value">Starter · Month [X] · ⚠️ Reviews stalled</span></li>
+        <li><span class="label"><span class="status-dot dot-red"></span>[CLIENT NAME 4]</span><span class="value">Dominate · Month [X] · 🚨 Renewal at risk</span></li>
+        <li><span class="label"><span class="status-dot dot-blue"></span>[YOUR OWN BUSINESS]</span><span class="value">Case Study #1 · Day [X] · Documenting</span></li>
+      </ul>
+    </div>
+    <div class="links">
+      <a href="/sales-onboarding/onboarding-day-one/" class="link-btn">Day-One Kickoff</a>
+      <a href="/sales-onboarding/weekly-report/" class="link-btn">Weekly Report Format</a>
+      <a href="/sales-onboarding/qbr/" class="link-btn">QBR Template</a>
+      <a href="https://app.gohighlevel.com" class="link-btn" target="_blank" rel="noopener">GHL Pipeline</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION: PIPELINE / PROSPECTS
+     Track outreach here. Update weekly.
+     ══════════════════════════════════════════════════════ -->
+<div class="divider"><div class="divider-label">Pipeline & Prospects</div></div>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Prospect Pipeline</span>
+      <span class="badge badge-yellow">IN PROGRESS</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><span class="label"><span class="status-dot dot-orange"></span>[PROSPECT 1]</span><span class="value">Loom sent · Follow up [DATE]</span></li>
+        <li><span class="label"><span class="status-dot dot-orange"></span>[PROSPECT 2]</span><span class="value">Call booked · [DATE]</span></li>
+        <li><span class="label"><span class="status-dot dot-yellow"></span>[PROSPECT 3]</span><span class="value">Proposal sent · Awaiting</span></li>
+        <li><span class="label"><span class="status-dot dot-blue"></span>Prospect list size</span><span class="value">[X] / 30 built</span></li>
+        <li><span class="label"><span class="status-dot dot-blue"></span>Looms sent this month</span><span class="value">[X] / 20 goal</span></li>
+        <li><span class="label"><span class="status-dot dot-blue"></span>Strategy calls booked</span><span class="value">[X] this month</span></li>
+      </ul>
+    </div>
+    <div class="links">
+      <a href="/sales-onboarding/cold-outreach/" class="link-btn">Cold Outreach Playbook</a>
+      <a href="/sales-onboarding/discovery-call/" class="link-btn">Discovery Call</a>
+      <a href="/sales-onboarding/lead-qualification/" class="link-btn">Lead Qualification</a>
+      <a href="/sales-onboarding/proposal-template/" class="link-btn">Proposal Template</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Revenue Tracking</span>
+      <span class="badge badge-blue">MRR FOCUS</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><span class="label">Current MRR</span><span class="value">$[X]/mo</span></li>
+        <li><span class="label">Active clients</span><span class="value">[X]</span></li>
+        <li><span class="label">Avg revenue per client</span><span class="value">$[X]/mo</span></li>
+        <li><span class="label">Churn this quarter</span><span class="value">[X] client(s)</span></li>
+        <li><span class="label">Next milestone</span><span class="value">$[X]K MRR · [X] clients</span></li>
+        <li><span class="label"><span class="status-dot dot-green"></span>Trend</span><span class="value">📈 Growing</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Renewals & Risk</span>
+      <span class="badge badge-orange">WATCH</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><span class="label"><span class="status-dot dot-red"></span>[CLIENT 4] — renewal</span><span class="value">Due [DATE] · save-play active</span></li>
+        <li><span class="label"><span class="status-dot dot-yellow"></span>[CLIENT 3] — check-in</span><span class="value">Schedule this week</span></li>
+        <li><span class="label"><span class="status-dot dot-green"></span>[CLIENT 1] — upsell</span><span class="value">Growth → Dominate</span></li>
+        <li><span class="label"><span class="status-dot dot-blue"></span>QBRs due this quarter</span><span class="value">[X]</span></li>
+      </ul>
+    </div>
+    <div class="links">
+      <a href="/sales-onboarding/renewals-upsells/" class="link-btn">Renewals & Upsells</a>
+      <a href="/retention/save-the-account/" class="link-btn">Save-the-Account</a>
+      <a href="/retention/monthly-checkin/" class="link-btn">Monthly Check-in</a>
+      <a href="/operations/escalation-ladder/" class="link-btn">Escalation Ladder</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION: ONBOARDING QUEUE
+     New clients in their first 30 days.
+     ══════════════════════════════════════════════════════ -->
+<div class="divider"><div class="divider-label">Onboarding Queue</div></div>
+<div class="grid">
+
+  <div class="card two-thirds">
+    <div class="card-header">
+      <span class="card-title">First 30 Days — In Flight</span>
+      <span class="badge badge-blue">ONBOARDING</span>
+    </div>
+    <div class="card-body">
+      <div class="timeline-row">
+        <span class="timeline-when">[CLIENT] · Day 1</span>
+        <span class="timeline-what">Kickoff call · access checklist · expectations set</span>
+        <span class="timeline-status status-now">NOW</span>
+      </div>
+      <div class="timeline-row">
+        <span class="timeline-when">[CLIENT] · Week 1</span>
+        <span class="timeline-what">Baseline audit · strategy deck · first deliverables scoped</span>
+        <span class="timeline-status status-soon">SOON</span>
+      </div>
+      <div class="timeline-row">
+        <span class="timeline-when">[CLIENT] · Day 30</span>
+        <span class="timeline-what">First report · 30-day review · confirm quick win landed</span>
+        <span class="timeline-status status-later">LATER</span>
+      </div>
+    </div>
+    <div class="links">
+      <a href="/sales-onboarding/access-checklist/" class="link-btn">Access Checklist</a>
+      <a href="/sales-onboarding/week-one-strategy/" class="link-btn">Week 1 Strategy</a>
+      <a href="/retention/onboarding-30-day/" class="link-btn">30-Day Sequence</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Scarcity Limit</span>
+      <span class="badge badge-yellow">CAPACITY</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><span class="label">Max new clients / month</span><span class="value">[X]</span></li>
+        <li><span class="label">Onboarding now</span><span class="value">[X]</span></li>
+        <li><span class="label">Delivery capacity left</span><span class="value">[X] slots</span></li>
+      </ul>
+    </div>
+    <div class="links">
+      <a href="/operations/capacity-planning/" class="link-btn">Capacity Planning</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div style="padding:20px 24px;border-top:1px solid #1e293b;font-size:0.75rem;color:#334155;text-align:center;">
+  [YOUR AGENCY] · Client Tracker · Built with the 7-Figure Agency SOP Wiki template ·
+  <a href="/" style="color:#475569;text-decoration:none;">SOP Wiki</a> ·
+  Updated [DATE]
+</div>
+
+</body>
+</html>

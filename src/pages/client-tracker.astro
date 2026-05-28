@@ -1,0 +1,7 @@
+---
+// Standalone Client Tracker dashboard. Source is src/client-tracker.html
+// (self-contained HTML/CSS, no build step). Emitted verbatim via set:html so it
+// renders exactly as authored at the clean /client-tracker URL in dev and prod.
+import html from '../client-tracker.html?raw';
+---
+<Fragment set:html={html} />
