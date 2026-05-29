@@ -1,0 +1,17 @@
+{
+  // Static-assets deployment for the Starlight site.
+  // Cloudflare's Git integration runs `npm run build` (static output to dist/)
+  // then `npx wrangler deploy`, which reads this config. Because `assets` is set
+  // and there is NO `main` worker entry, wrangler treats this as a static-assets
+  // project and uploads dist/ as-is — it does NOT run `astro add cloudflare`, so
+  // the SSR adapter is never added and the build stays plain-static (the
+  // build-number components can keep using node:fs / node:child_process at build time).
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "1up-media-solutions-sops",
+  "compatibility_date": "2026-05-28",
+  "assets": {
+    "directory": "./dist",
+    // Serve Astro's generated 404.html for unknown paths.
+    "not_found_handling": "404-page"
+  }
+}
